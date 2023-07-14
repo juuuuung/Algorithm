@@ -1,5 +1,4 @@
 #include <bits/stdc++.h>
-
 typedef unsigned long long int uli;
 using namespace std;
 void init(){
@@ -8,28 +7,27 @@ void init(){
   cout.tie(0);
 }
 const int Max = 10'000'000;
-uli a, b, result = 0;
-
-vector<int> decimal(){
-  vector<bool> arr(Max+1, 1);
-  vector<int> primes;
-  for(uli i = 2; i*i <= Max; ++i){
+uli result = 0, a, b;
+vector<bool> arr(Max+1, 1);
+void decimal(){
+  for(int i = 2; i * i<= Max; ++i){
     if(!arr[i]) continue;
-    for(uli j = i*i; j <= Max; j += i)
-      arr[j] = 0;
+    for(int j = i*i; j <= Max; j += i) arr[j] = 0;
   }
-  for(int i = 2; i <= Max; ++i)
-    if(arr[i])primes.push_back(i);
-  return primes;
 }
-
 int main(){
   init();
+  decimal();
+  arr[0] = 0, arr[1] = 0;
   cin >> a >> b;
-  vector<int> primes = decimal();
-  for(int p : primes)
-    for(uli i = p; i <= b/p; i*=p)
-      result += (i*p>= a);
+  for(uli i = 2; i <= Max; ++i){
+    uli cnt = i;
+    if(!arr[i])continue;
+    while(cnt <= b/i){
+      result += (cnt * i >= a);
+      cnt *= i;
+    }
+  }
   cout << result;
   return 0;
 }
