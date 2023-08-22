@@ -7,11 +7,11 @@ void init(){
   cout.tie(0);
 }
 
-int N, M;
-int board[302][302], sub[302][302];
+int N, M, board[302][302], sub[302][302];
 bool vis[302][302];
 
-int dx[4] = {0,1,0,-1}, dy[4] = {1,0,-1,0};
+int dx[4] = {0,1,0,-1};
+int dy[4] = {1,0,-1,0};
 queue<pair<int, int>> Q;
 
 bool OOB(int x, int y){
@@ -25,6 +25,19 @@ void substract(){
         int result = board[i][j] - sub[i][j];
         board[i][j] = result <= 0 ? 0 : result;
       }
+    }
+  }
+}
+
+void bfs(){
+  while(!Q.empty()){
+    int x, y; tie(x, y) = Q.front(); Q.pop();
+    for(int dir = 0; dir < 4; ++dir){
+    int nx = dx[dir] + x;
+    int ny = dy[dir] + y;
+    if(OOB(nx, ny) || vis[nx][ny] || !board[nx][ny]) continue;
+    Q.push({nx, ny});
+    vis[nx][ny] = 1;
     }
   }
 }
@@ -55,26 +68,16 @@ int main(){
       cout << 0;
       return 0;
     }
+
     substract();
-
     lumpCnt = 0;
-
     for(int i=0; i<N; ++i){
       for(int j=0; j<M; ++j){
         if(board[i][j] && !vis[i][j]){
           lumpCnt++;
           Q.push({i, j});
           vis[i][j] = 1;
-          while(!Q.empty()){
-            int x, y; tie(x, y) = Q.front(); Q.pop();
-            for(int dir = 0; dir < 4; ++dir){
-              int nx = dx[dir] + x;
-              int ny = dy[dir] + y;
-              if(OOB(nx, ny) || vis[nx][ny] || !board[nx][ny]) continue;
-              Q.push({nx, ny});
-              vis[nx][ny] = 1;
-            }
-          }
+          bfs();
         }
       }
     }
